@@ -1,4 +1,4 @@
-# Migrating CrowdStrike Endpoints with No MDM
+# Migrating CrowdStrike Endpoints without MDM using RTR
 
 Recently, I had to migrate endpoints from a subsidiary’s CrowdStrike tenant to the parent company’s tenant, both with different CIDs.
 
