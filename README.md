@@ -25,11 +25,11 @@ The fix was simple: wrap the migration PowerShell script in a batch file that us
 Since RTR was the only management tool on these hosts, I used it to deploy and run the batch file:
 
 1.  **Update the credentials in script.**
-2.  
-3.  **Push the BAT file** onto the endpoint via RTR:
+
+2.  **Push the BAT file** onto the endpoint via RTR:
     `put crowdstrike-migration.bat`
 
-4.  **Run it** (this spawns the PowerShell script in the background and survives the sensor uninstall):
+3.  **Run it** (this spawns the PowerShell script in the background and survives the sensor uninstall):
     `run C:\crowdstrike-migration.bat`
 
 At this point, the RTR session disconnects, as expected, but the migration process continues to run in the background.
