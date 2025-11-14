@@ -1,0 +1,14 @@
+#repo=sensor_metadata #data_source_name=aidmaster #data_source_group=aidmaster-api
+| groupBy([aid], function=([selectFromMax(field="@timestamp", include=[ComputerName, Time, Version, ConfigIDBuild, AgentVersion])]))
+| match(file="falcon/investigate/sensors_support_info.csv", field=ConfigIDBuild, column=BUILD, ignoreCase=true, strict=false)
+| parseTimestamp("M/d/yy",field=SUPPORT_ENDS, as=SUPPORT_ENDS_EPOCH, timezone="UTC")
+
+
+#event_simpleName=OsVersionInfo
+| groupBy([aid], function=([selectFromMax(field="@timestamp", include=[event_platform, ComputerName, AgentVersion])]), limit=max)
+| AgentVersion=/\d+\.\d+\.(?<BUILD>\d+)\./
+| BUILD=~match(file="falcon/investigate/sensors_support_info.csv", column="BUILD", include=[SUPPORT_ENDS], strict=true)
+| groupBy([event_platform,ComputerName, BUILD, AgentVersion, SUPPORT_ENDS], function=([count(aid, as=TotalSystems)]))
+| parseTimestamp("M/d/yy",field=SUPPORT_ENDS, as=SUPPORT_ENDS_EPOCH, timezone="UTC")
+| test(SUPPORT_ENDS_EPOCH < now())
+| drop([@timezone, SUPPORT_ENDS_EPOCH, SUPPORT_ENDS_EPOCH.nanos])
